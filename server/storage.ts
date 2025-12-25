@@ -34,7 +34,7 @@ export interface IStorage {
   getSurpriseConfigs(): Promise<SurpriseConfig[]>;
   getSurpriseConfig(id: number): Promise<SurpriseConfig | undefined>;
   updateSurpriseUrl(id: number, url: string): Promise<SurpriseConfig | undefined>;
-  updateSurprise(id: number, data: { url?: string; name?: string; password?: string; content?: string; unlockDate?: Date }): Promise<SurpriseConfig | undefined>;
+  updateSurprise(id: number, data: { url?: string; name?: string; password?: string; content?: string; timerText?: string; imagePath?: string; unlockDate?: Date }): Promise<SurpriseConfig | undefined>;
   initializeSurprises(): Promise<void>;
 
   getSiteContent(): Promise<SiteContent[]>;
@@ -43,16 +43,18 @@ export interface IStorage {
   initializeSiteContent(): Promise<void>;
 }
 
-const defaultSurprises: InsertSurpriseConfig[] = [
-  { id: 1, name: "the day u happned", url: "", content: "", unlockDate: new Date("2026-01-10T00:00:00"), imagePath: "/surprises/photo_2025-12-14_21-18-15.jpg" },
-  { id: 2, name: "soft things i Never say", url: "", content: "", unlockDate: new Date("2026-01-13T00:00:00"), imagePath: "/surprises/photo_2025-12-14_21-18-08.jpg" },
-  { id: 3, name: "it felt like u", url: "", content: "", unlockDate: new Date("2026-01-16T00:00:00"), imagePath: "/surprises/photo_2025-12-14_21-18-11.jpg" },
-  { id: 4, name: "Us , since that day", url: "", content: "", unlockDate: new Date("2026-01-20T00:00:00"), imagePath: "/surprises/photo_2025-12-14_21-18-19.jpg" },
-  { id: 5, name: "Nothing loud, just true", url: "", content: "", unlockDate: new Date("2026-01-23T00:00:00"), imagePath: "/surprises/photo_2025-12-14_21-18-17.jpg" },
-  { id: 6, name: "almost a secret", url: "", content: "", unlockDate: new Date("2026-01-26T00:00:00"), imagePath: "/surprises/photo_2025-12-14_21-18-13.jpg" },
-  { id: 7, name: "if i am being honest", url: "", content: "", unlockDate: new Date("2026-01-29T00:00:00"), imagePath: "/surprises/surprise7_new.jpg" },
-  { id: 8, name: "Something i' been saving", url: "", content: "", unlockDate: new Date("2026-02-01T00:00:00"), imagePath: "/surprises/photo_2025-12-14_21-18-24.jpg" },
-  { id: 9, name: "More than imagination", url: "", content: "", unlockDate: new Date("2026-02-01T00:00:00"), imagePath: "/surprises/surprise9_new.jpg" },
+export const defaultSurprises: InsertSurpriseConfig[] = [
+  { id: 1, name: "the day u happned", url: "", content: "", timerText: "", unlockDate: new Date("2026-01-12T00:00:00"), imagePath: "/surprises/photo_2025-12-14_21-18-15.jpg" },
+  { id: 2, name: "soft things i Never say", url: "", content: "", timerText: "", unlockDate: new Date("2026-01-16T00:00:00"), imagePath: "/surprises/photo_2025-12-14_21-18-08.jpg" },
+  // swapped 3 <-> 4 as requested
+  { id: 3, name: "Us , since that day", url: "", content: "", timerText: "", unlockDate: new Date("2026-01-20T00:00:00"), imagePath: "/surprises/photo_2025-12-14_21-18-19.jpg" },
+  { id: 4, name: "it felt like u", url: "", content: "", timerText: "", unlockDate: new Date("2026-01-23T00:00:00"), imagePath: "/surprises/photo_2025-12-14_21-18-11.jpg" },
+  // swapped 5 <-> 6 as requested
+  { id: 5, name: "almost a secret", url: "", content: "", timerText: "", unlockDate: new Date("2026-01-26T00:00:00"), imagePath: "/surprises/photo_2025-12-14_21-18-13.jpg" },
+  { id: 6, name: "Nothing loud, just true", url: "", content: "", timerText: "", unlockDate: new Date("2026-01-29T00:00:00"), imagePath: "/surprises/photo_2025-12-14_21-18-17.jpg" },
+  { id: 7, name: "if i am being honest", url: "", content: "", timerText: "", unlockDate: new Date("2026-02-01T00:00:00"), imagePath: "/surprises/surprise7_new.jpg" },
+  { id: 8, name: "Something i' been saving", url: "", content: "", timerText: "", unlockDate: new Date("2026-02-05T00:00:00"), imagePath: "/surprises/photo_2025-12-14_21-18-24.jpg" },
+  { id: 9, name: "More than imagination", url: "", content: "", timerText: "", unlockDate: new Date("2026-02-05T00:00:00"), imagePath: "/surprises/surprise9_new.jpg" },
 ];
 
 const defaultSiteContent: { key: string; value: string }[] = [
@@ -134,7 +136,27 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getSurpriseConfigs(): Promise<SurpriseConfig[]> {
-    return await db.select().from(surpriseConfigs).orderBy(asc(surpriseConfigs.id));
+    try {
+      return await db.select().from(surpriseConfigs).orderBy(asc(surpriseConfigs.id));
+    } catch (err) {
+      // If the DB schema hasn't been migrated yet (new column), fall back
+      // to selecting known columns and provide a default for `timerText`.
+      console.warn("getSurpriseConfigs: falling back due to DB schema mismatch", err);
+      const rows = await db
+        .select({
+          id: surpriseConfigs.id,
+          name: surpriseConfigs.name,
+          url: surpriseConfigs.url,
+          content: surpriseConfigs.content,
+          unlockDate: surpriseConfigs.unlockDate,
+          imagePath: surpriseConfigs.imagePath,
+          password: surpriseConfigs.password,
+        })
+        .from(surpriseConfigs)
+        .orderBy(asc(surpriseConfigs.id));
+
+      return rows.map((r: any) => ({ ...r, timerText: "" }));
+    }
   }
 
   async getSurpriseConfig(id: number): Promise<SurpriseConfig | undefined> {
@@ -151,12 +173,14 @@ export class DatabaseStorage implements IStorage {
     return updated || undefined;
   }
 
-  async updateSurprise(id: number, data: { url?: string; name?: string; password?: string; content?: string; unlockDate?: Date }): Promise<SurpriseConfig | undefined> {
-    const updateData: Partial<{ url: string; name: string; password: string; content: string; unlockDate: Date }> = {};
+  async updateSurprise(id: number, data: { url?: string; name?: string; password?: string; content?: string; timerText?: string; imagePath?: string; unlockDate?: Date }): Promise<SurpriseConfig | undefined> {
+    const updateData: Partial<{ url: string; name: string; password: string; content: string; timerText: string; imagePath: string; unlockDate: Date }> = {};
     if (data.url !== undefined) updateData.url = data.url;
     if (data.name !== undefined) updateData.name = data.name;
     if (data.password !== undefined) updateData.password = data.password;
     if (data.content !== undefined) updateData.content = data.content;
+    if (data.timerText !== undefined) updateData.timerText = data.timerText;
+    if (data.imagePath !== undefined) updateData.imagePath = data.imagePath;
     if (data.unlockDate !== undefined) updateData.unlockDate = data.unlockDate;
     
     const [updated] = await db

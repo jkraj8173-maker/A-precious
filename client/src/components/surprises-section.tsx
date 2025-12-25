@@ -132,7 +132,11 @@ function SurprisePopup({
       onReveal(surprise.id, surprise.content || "", surprise.url || "");
       if (surprise.url) {
         const url = surprise.url.startsWith('http') ? surprise.url : `https://${surprise.url}`;
-        window.location.assign(url);
+        try {
+          window.open(url, "_blank", "noopener,noreferrer");
+        } catch {
+          window.location.assign(url);
+        }
       }
       onClose();
       return;
@@ -155,7 +159,11 @@ function SurprisePopup({
         onReveal(surprise.id, data.content || "", data.url || "");
         if (data.url) {
           const url = data.url.startsWith('http') ? data.url : `https://${data.url}`;
-          window.location.assign(url);
+          try {
+            window.open(url, "_blank", "noopener,noreferrer");
+          } catch {
+            window.location.assign(url);
+          }
         }
         onClose();
       } else {
@@ -618,7 +626,7 @@ function SurpriseCard({
   isAdmin: boolean;
   isRevealed: boolean;
   onReveal: (id: number, content?: string, url?: string) => void;
-  onEdit: (id: number, data: { url?: string; name?: string; content?: string; surprisePassword?: string; unlockNow?: boolean; relockNow?: boolean }) => void;
+  onEdit: (id: number, data: { url?: string; name?: string; content?: string; timerText?: string; imagePath?: string; surprisePassword?: string; unlockNow?: boolean; relockNow?: boolean }) => void;
   rules?: string;
   onShowFloatingKey?: (surpriseId: number) => void;
 }) {
@@ -626,13 +634,14 @@ function SurpriseCard({
     url: surprise.url,
     name: surprise.name,
     content: surprise.content || "",
+    timerText: (surprise as any).timerText || "",
+    imagePath: surprise.imagePath || "",
     password: surprise.password || "",
   });
   const [isEditing, setIsEditing] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [showRulesPopup, setShowRulesPopup] = useState(false);
-  
-  const isUnlocked = new Date(surprise.unlockDate).getTime() <= new Date().getTime();
+    const isUnlocked = new Date(surprise.unlockDate).getTime() <= new Date().getTime();
   const hasContent = surprise.content && surprise.content.length > 0;
   const hasPassword = surprise.password && surprise.password.length > 0;
 
@@ -641,6 +650,8 @@ function SurpriseCard({
       url: editData.url,
       name: editData.name,
       content: editData.content,
+      timerText: editData.timerText,
+      imagePath: editData.imagePath,
       surprisePassword: editData.password,
     });
     setIsEditing(false);
@@ -883,6 +894,10 @@ function SurpriseCard({
           <img 
             src={surprise.imagePath} 
             alt={surprise.name}
+            loading="lazy"
+            decoding="async"
+            fetchPriority="low"
+            style={{ willChange: 'transform, opacity' }}
             className={`w-full h-full object-cover object-center transition-all duration-500 ${
               !isUnlocked && !isAdmin ? "blur-[2px] opacity-70" : ""
             }`}
@@ -940,7 +955,17 @@ function SurpriseCard({
           </h3>
           
           <AnimatePresence mode="wait">
-            {isRevealed && !isEditing && hasContent && (
+            {isRevealed && !isEditing && !isUnlocked && (
+              <motion.p
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="font-body text-sm text-muted-foreground mt-2 leading-relaxed"
+              >
+                {(surprise as any).timerText || "Coming soon..."}
+              </motion.p>
+            )}
+            {isRevealed && !isEditing && hasContent && isUnlocked && (
               <motion.p
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
@@ -950,7 +975,7 @@ function SurpriseCard({
                 {surprise.content}
               </motion.p>
             )}
-            {isRevealed && !isEditing && !hasContent && (
+            {isRevealed && !isEditing && !hasContent && isUnlocked && (
               <motion.p
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
@@ -982,11 +1007,25 @@ function SurpriseCard({
                 data-testid={`input-name-surprise-${surprise.id}`}
               />
               <Textarea 
+                value={editData.timerText} 
+                onChange={(e) => setEditData(prev => ({ ...prev, timerText: e.target.value }))}
+                placeholder="5. Teaser text (shows while timer running)..."
+                className="text-xs min-h-[60px]"
+                data-testid={`input-timerText-surprise-${surprise.id}`}
+              />
+              <Textarea 
                 value={editData.content} 
                 onChange={(e) => setEditData(prev => ({ ...prev, content: e.target.value }))}
-                placeholder="2. Content that reveals when clicked..."
+                placeholder="2. Real surprise text (shows after timer ends)..."
                 className="text-xs min-h-[60px]"
                 data-testid={`input-content-surprise-${surprise.id}`}
+              />
+              <Input 
+                value={editData.imagePath} 
+                onChange={(e) => setEditData(prev => ({ ...prev, imagePath: e.target.value }))}
+                placeholder="Image path (e.g., /surprises/photo.jpg)..."
+                className="text-xs"
+                data-testid={`input-imagePath-surprise-${surprise.id}`}
               />
               <Input 
                 value={editData.url} 
@@ -1193,7 +1232,7 @@ export function SurprisesSection({ isAdmin, adminPassword, content = {} }: Surpr
   const updateMutation = useMutation({
     mutationFn: async ({ id, data, password }: { 
       id: number; 
-      data: { url?: string; name?: string; content?: string; surprisePassword?: string; unlockNow?: boolean; relockNow?: boolean };
+      data: { url?: string; name?: string; content?: string; timerText?: string; imagePath?: string; surprisePassword?: string; unlockNow?: boolean; relockNow?: boolean };
       password: string;
     }) => {
       const res = await apiRequest("PUT", `/api/surprises/${id}`, { 
@@ -1230,7 +1269,7 @@ export function SurprisesSection({ isAdmin, adminPassword, content = {} }: Surpr
     setRevealedIds(prev => new Set(Array.from(prev).concat([id])));
   };
 
-  const handleEdit = (id: number, data: { url?: string; name?: string; content?: string; surprisePassword?: string; unlockNow?: boolean; relockNow?: boolean }) => {
+  const handleEdit = (id: number, data: { url?: string; name?: string; content?: string; timerText?: string; imagePath?: string; surprisePassword?: string; unlockNow?: boolean; relockNow?: boolean }) => {
     if (adminPassword) {
       updateMutation.mutate({ id, data, password: adminPassword });
     }
@@ -1312,10 +1351,7 @@ export function SurprisesSection({ isAdmin, adminPassword, content = {} }: Surpr
             </div>
             <div className="max-w-sm mx-auto">
               <SurpriseCard 
-                surprise={{
-                  ...surprise9,
-                  unlockDate: (allFirst8Revealed && allFirst8Unlocked) || isAdmin ? new Date().toISOString() : surprise9.unlockDate
-                }} 
+                surprise={surprise9} 
                 isAdmin={isAdmin}
                 isRevealed={revealedIds.has(surprise9.id)}
                 onReveal={handleReveal}

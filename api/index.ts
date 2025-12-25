@@ -79,15 +79,15 @@ function getDb() {
 
 // Default data
 const defaultSurprises = [
-  { id: 1, name: "the day u happned", url: "", content: "", unlockDate: new Date("2026-01-10T00:00:00"), imagePath: "/surprises/photo_2025-12-14_21-18-15.jpg", password: "" },
-  { id: 2, name: "soft things i Never say", url: "", content: "", unlockDate: new Date("2026-01-13T00:00:00"), imagePath: "/surprises/photo_2025-12-14_21-18-08.jpg", password: "" },
-  { id: 3, name: "it felt like u", url: "", content: "", unlockDate: new Date("2026-01-16T00:00:00"), imagePath: "/surprises/photo_2025-12-14_21-18-11.jpg", password: "" },
-  { id: 4, name: "Us , since that day", url: "", content: "", unlockDate: new Date("2026-01-20T00:00:00"), imagePath: "/surprises/photo_2025-12-14_21-18-19.jpg", password: "" },
-  { id: 5, name: "Nothing loud, just true", url: "", content: "", unlockDate: new Date("2026-01-23T00:00:00"), imagePath: "/surprises/photo_2025-12-14_21-18-17.jpg", password: "" },
-  { id: 6, name: "almost a secret", url: "", content: "", unlockDate: new Date("2026-01-26T00:00:00"), imagePath: "/surprises/photo_2025-12-14_21-18-13.jpg", password: "" },
-  { id: 7, name: "if i am being honest", url: "", content: "", unlockDate: new Date("2026-01-29T00:00:00"), imagePath: "/surprises/surprise7_new.jpg", password: "" },
-  { id: 8, name: "Something i' been saving", url: "", content: "", unlockDate: new Date("2026-02-01T00:00:00"), imagePath: "/surprises/photo_2025-12-14_21-18-24.jpg", password: "" },
-  { id: 9, name: "More than imagination", url: "", content: "", unlockDate: new Date("2026-02-01T00:00:00"), imagePath: "/surprises/surprise9_new.jpg", password: "" },
+  { id: 1, name: "the day u happned", url: "", content: "", unlockDate: new Date("2026-01-12T00:00:00"), imagePath: "/surprises/photo_2025-12-14_21-18-15.jpg", password: "" },
+  { id: 2, name: "soft things i Never say", url: "", content: "", unlockDate: new Date("2026-01-16T00:00:00"), imagePath: "/surprises/photo_2025-12-14_21-18-08.jpg", password: "" },
+  { id: 3, name: "Us , since that day", url: "", content: "", unlockDate: new Date("2026-01-20T00:00:00"), imagePath: "/surprises/photo_2025-12-14_21-18-19.jpg", password: "" },
+  { id: 4, name: "it felt like u", url: "", content: "", unlockDate: new Date("2026-01-23T00:00:00"), imagePath: "/surprises/photo_2025-12-14_21-18-11.jpg", password: "" },
+  { id: 5, name: "almost a secret", url: "", content: "", unlockDate: new Date("2026-01-26T00:00:00"), imagePath: "/surprises/photo_2025-12-14_21-18-13.jpg", password: "" },
+  { id: 6, name: "Nothing loud, just true", url: "", content: "", unlockDate: new Date("2026-01-29T00:00:00"), imagePath: "/surprises/photo_2025-12-14_21-18-17.jpg", password: "" },
+  { id: 7, name: "if i am being honest", url: "", content: "", unlockDate: new Date("2026-02-01T00:00:00"), imagePath: "/surprises/surprise7_new.jpg", password: "" },
+  { id: 8, name: "Something i' been saving", url: "", content: "", unlockDate: new Date("2026-02-05T00:00:00"), imagePath: "/surprises/photo_2025-12-14_21-18-24.jpg", password: "" },
+  { id: 9, name: "More than imagination", url: "", content: "", unlockDate: new Date("2026-02-08T00:00:00"), imagePath: "/surprises/surprise9_new.jpg", password: "" },
 ];
 
 const defaultSiteContent = [

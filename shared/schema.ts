@@ -51,6 +51,7 @@ export const surpriseConfigs = pgTable("surprise_configs", {
   name: text("name").notNull(),
   url: text("url").notNull().default(""),
   content: text("content").notNull().default(""),
+  timerText: text("timer_text").notNull().default(""),
   unlockDate: timestamp("unlock_date").notNull(),
   imagePath: text("image_path").notNull(),
   password: text("password").notNull().default(""),
@@ -62,6 +63,8 @@ export const updateSurpriseConfigSchema = createInsertSchema(surpriseConfigs).pi
   name: true,
   password: true,
   content: true,
+  timerText: true,
+  imagePath: true,
 });
 
 export const siteContent = pgTable("site_content", {

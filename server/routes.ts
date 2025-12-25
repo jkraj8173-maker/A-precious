@@ -1,6 +1,6 @@
 import type { Express } from "express";
 import { type Server } from "http";
-import { storage } from "./storage";
+import { storage, defaultSurprises } from "./storage";
 import { insertProposalResponseSchema, insertSiteVisitSchema, updateSurpriseConfigSchema } from "@shared/schema";
 
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "admin";
@@ -168,20 +168,27 @@ export async function registerRoutes(
       }
 
       const id = parseInt(req.params.id);
-      const updateData: { url?: string; name?: string; password?: string; content?: string; unlockDate?: Date } = {};
+      const updateData: { url?: string; name?: string; password?: string; content?: string; timerText?: string; imagePath?: string; unlockDate?: Date } = {};
       
       if (req.body.url !== undefined) updateData.url = req.body.url;
       if (req.body.name !== undefined) updateData.name = req.body.name;
       if (req.body.content !== undefined) updateData.content = req.body.content;
+      if (req.body.timerText !== undefined) updateData.timerText = req.body.timerText;
+      if (req.body.imagePath !== undefined) updateData.imagePath = req.body.imagePath;
       if (req.body.surprisePassword !== undefined && req.body.surprisePassword !== null) {
         updateData.password = req.body.surprisePassword;
       }
       if (req.body.unlockNow) updateData.unlockDate = new Date();
       if (req.body.relockNow) {
-        // Set unlock date to 30 days from now to relock
-        const futureDate = new Date();
-        futureDate.setDate(futureDate.getDate() + 30);
-        updateData.unlockDate = futureDate;
+        // When relocking, prefer the original/default scheduled date for this surprise
+        const def = defaultSurprises.find(s => s.id === id);
+        if (def && def.unlockDate) {
+          updateData.unlockDate = def.unlockDate;
+        } else {
+          const futureDate = new Date();
+          futureDate.setDate(futureDate.getDate() + 30);
+          updateData.unlockDate = futureDate;
+        }
       }
 
       const updated = await storage.updateSurprise(id, updateData);

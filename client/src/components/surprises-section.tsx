@@ -15,6 +15,7 @@ interface SurpriseConfig {
   name: string;
   url: string;
   content: string;
+  timerText?: string;
   unlockDate: string;
   imagePath: string;
   password: string;
@@ -487,13 +488,23 @@ function SurprisePopup({
         </DialogHeader>
 
         <div className="space-y-4 py-4">
-          {/* Always show the content message */}
-          {surprise.content && surprise.content.length > 0 && (
+          {/* Show teaser while locked, real content after unlock */}
+          {!isUnlocked ? (
             <div className="text-center p-4 bg-white/60 dark:bg-black/30 rounded-lg border border-pink-100 dark:border-pink-900">
               <p className="text-foreground font-body leading-relaxed whitespace-pre-wrap">
-                {surprise.content}
+                {(surprise as any).timerText && (surprise as any).timerText.length > 0
+                  ? (surprise as any).timerText
+                  : "Patience, sweetie — this surprise will be ready soon!"}
               </p>
             </div>
+          ) : (
+            surprise.content && surprise.content.length > 0 ? (
+              <div className="text-center p-4 bg-white/60 dark:bg-black/30 rounded-lg border border-pink-100 dark:border-pink-900">
+                <p className="text-foreground font-body leading-relaxed whitespace-pre-wrap">
+                  {surprise.content}
+                </p>
+              </div>
+            ) : null
           )}
 
           {/* Always show the timer */}
@@ -570,15 +581,21 @@ function SurprisePopup({
           {!isUnlocked && (
             <div className="space-y-3">
               <div className="text-center text-sm text-muted-foreground bg-white/50 dark:bg-black/20 rounded-lg p-3 border border-pink-100 dark:border-pink-900">
-                <Sparkles className="w-4 h-4 inline mr-1 text-pink-500" />
-                Patience, sweetie! This surprise will be ready on{" "}
-                <span className="font-medium text-pink-600 dark:text-pink-400">
-                  {new Date(surprise.unlockDate).toLocaleDateString("en-US", { 
-                    month: "long", 
-                    day: "numeric",
-                    year: "numeric"
-                  })}
-                </span>
+                {((surprise as any).timerText && (surprise as any).timerText.length > 0) ? (
+                  <span className="text-foreground font-body leading-relaxed whitespace-pre-wrap">{(surprise as any).timerText}</span>
+                ) : (
+                  <>
+                    <Sparkles className="w-4 h-4 inline mr-1 text-pink-500" />
+                    Patience, sweetie! This surprise will be ready on{" "}
+                    <span className="font-medium text-pink-600 dark:text-pink-400">
+                      {new Date(surprise.unlockDate).toLocaleDateString("en-US", { 
+                        month: "long", 
+                        day: "numeric",
+                        year: "numeric"
+                      })}
+                    </span>
+                  </>
+                )}
               </div>
               {/* Show disabled key input when timer is still running (so user knows they need a key) */}
               {hasPassword && (

@@ -56,7 +56,7 @@ const updates = [
   },
   { id: 7, unlockDate: new Date("2026-02-01T00:00:00") },
   { id: 8, unlockDate: new Date("2026-02-05T00:00:00") },
-  { id: 9, unlockDate: new Date("2026-02-08T00:00:00") },
+  { id: 9, unlockDate: new Date("2026-02-05T00:00:00") },
 ];
 
 async function updateSurprises() {

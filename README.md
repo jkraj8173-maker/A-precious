@@ -1,34 +1,3 @@
-# A Precious — A Little Love Archive
-
-*An elegant, interactive surprise archive — crafted with care, for moments that matter.*
-
----
-
-## Overview
-
-A Precious is a hand-crafted, full‑stack interactive web experience for creating, scheduling, and revealing personal surprises. It&rsquo;s designed for anyone who wants to present curated memories and messages on special dates — lovers, friends, and creators who care about craft and subtle delight.
-
-Why this exists
-- To give meaningful moments a beautiful home on the web.
-- To combine simple game-like reveal mechanics (timers, keys, surprises) with a polished, responsive UI.
-
-Who its for
-- Creators delivering time-locked messages or gifts.
-- Developers who want a thoughtful, design-forward sample of a small full-stack app.
-
----
-
-## Key Features
-
-- Time-locked surprises: schedule reveals by date and optionally protect them with secret keys.
-- Two-stage surprise content: teaser text shows while the timer runs; the main surprise reveals after unlock.
-- Admin editor: edit name, teaser (timer) text, full surprise content, external URL, image, and key.
-- Smooth, animated UI with graceful loading and accessible controls.
-- Server-side API with persistent Postgres storage (Drizzle ORM) and safe defaults.
-- Easy deployment: production build and Express server ready for Render or similar hosts.
-
----
-
 ## Tech Stack
 # A Precious — A Little Love Archive
 
@@ -43,9 +12,7 @@ Who its for
 <img src="https://readme-typing-svg.herokuapp.com?font=Pacifico&size=26&pause=1000&color=FF69B4&center=true&vCenter=true&width=700&lines=Make+Someone's+Day+Special;Crafted+With+Love;Smooth+Animations;Unforgettable+Moments" alt="Typing SVG" />
 
 <p>
-[![Made with Love](https://img.shields.io/badge/Made%20with-Love-ff69b4?style=for-the-badge&logo=heart)](https://github.com)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com)
-[![Framer Motion](https://img.shields.io/badge/Framer-Motion-FF0055?style=for-the-badge&logo=framer)](https://framer.com/motion)
+
 </p>
 
 </div>

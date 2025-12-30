@@ -43,7 +43,7 @@ export function MusicPlayer({ autoPlay = false, onAdminLogin, isAdmin = false, o
   const [loginDialogOpen, setLoginDialogOpen] = useState(false);
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [heartLink, setHeartLink] = useState("https://example.com/gallery");
+  const [heartLink, setHeartLink] = useState("https://a-jeet-ai-12.onrender.com");
   const [editLinkDialogOpen, setEditLinkDialogOpen] = useState(false);
   const [tempLink, setTempLink] = useState("");
   const audioRef = useRef<HTMLAudioElement | null>(null);

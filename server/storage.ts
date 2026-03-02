@@ -44,17 +44,17 @@ export interface IStorage {
 }
 
 export const defaultSurprises: InsertSurpriseConfig[] = [
-  { id: 1, name: "the day u happned", url: "", content: "", timerText: "", unlockDate: new Date("2026-01-12T00:00:00"), imagePath: "/surprises/photo_2025-12-14_21-18-15.jpg" },
-  { id: 2, name: "soft things i Never say", url: "", content: "", timerText: "", unlockDate: new Date("2026-01-16T00:00:00"), imagePath: "/surprises/photo_2025-12-14_21-18-08.jpg" },
+  { id: 1, name: "the day u happned", url: "", content: "", timerText: "", unlockDate: new Date("2026-03-12T00:00:00"), imagePath: "/surprises/photo_2025-12-14_21-18-15.jpg" },
+  { id: 2, name: "soft things i Never say", url: "", content: "", timerText: "", unlockDate: new Date("2026-03-16T00:00:00"), imagePath: "/surprises/photo_2025-12-14_21-18-08.jpg" },
   // swapped 3 <-> 4 as requested
-  { id: 3, name: "Us , since that day", url: "", content: "", timerText: "", unlockDate: new Date("2026-01-20T00:00:00"), imagePath: "/surprises/photo_2025-12-14_21-18-19.jpg" },
-  { id: 4, name: "it felt like u", url: "", content: "", timerText: "", unlockDate: new Date("2026-01-23T00:00:00"), imagePath: "/surprises/photo_2025-12-14_21-18-11.jpg" },
+  { id: 3, name: "Us , since that day", url: "", content: "", timerText: "", unlockDate: new Date("2026-03-20T00:00:00"), imagePath: "/surprises/photo_2025-12-14_21-18-19.jpg" },
+  { id: 4, name: "it felt like u", url: "", content: "", timerText: "", unlockDate: new Date("2026-03-23T00:00:00"), imagePath: "/surprises/photo_2025-12-14_21-18-11.jpg" },
   // swapped 5 <-> 6 as requested
-  { id: 5, name: "almost a secret", url: "", content: "", timerText: "", unlockDate: new Date("2026-01-26T00:00:00"), imagePath: "/surprises/photo_2025-12-14_21-18-13.jpg" },
-  { id: 6, name: "Nothing loud, just true", url: "", content: "", timerText: "", unlockDate: new Date("2026-01-29T00:00:00"), imagePath: "/surprises/photo_2025-12-14_21-18-17.jpg" },
-  { id: 7, name: "if i am being honest", url: "", content: "", timerText: "", unlockDate: new Date("2026-02-01T00:00:00"), imagePath: "/surprises/surprise7_new.jpg" },
-  { id: 8, name: "Something i' been saving", url: "", content: "", timerText: "", unlockDate: new Date("2026-02-05T00:00:00"), imagePath: "/surprises/photo_2025-12-14_21-18-24.jpg" },
-  { id: 9, name: "More than imagination", url: "", content: "", timerText: "", unlockDate: new Date("2026-02-05T00:00:00"), imagePath: "/surprises/surprise9_new.jpg" },
+  { id: 5, name: "almost a secret", url: "", content: "", timerText: "", unlockDate: new Date("2026-03-26T00:00:00"), imagePath: "/surprises/photo_2025-12-14_21-18-13.jpg" },
+  { id: 6, name: "Nothing loud, just true", url: "", content: "", timerText: "", unlockDate: new Date("2026-03-29T00:00:00"), imagePath: "/surprises/photo_2025-12-14_21-18-17.jpg" },
+  { id: 7, name: "if i am being honest", url: "", content: "", timerText: "", unlockDate: new Date("2026-04-01T00:00:00"), imagePath: "/surprises/surprise7_new.jpg" },
+  { id: 8, name: "Something i' been saving", url: "", content: "", timerText: "", unlockDate: new Date("2026-04-05T00:00:00"), imagePath: "/surprises/photo_2025-12-14_21-18-24.jpg" },
+  { id: 9, name: "More than imagination", url: "", content: "", timerText: "", unlockDate: new Date("2026-04-06T00:00:00"), imagePath: "/surprises/surprise9_new.jpg" },
 ];
 
 const defaultSiteContent: { key: string; value: string }[] = [
